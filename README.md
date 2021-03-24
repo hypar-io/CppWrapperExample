@@ -1,5 +1,3 @@
-
-
 # CppWrapperExample
 
 This is an example of how to build a C++ library, called by a .net wrapper, for use in a Hypar function. There are several components:
@@ -8,9 +6,11 @@ This is an example of how to build a C++ library, called by a .net wrapper, for 
 - `/test` - Contains the .net test source code.
 - `Dockerfile` - The Docker file describes the setup of your docker container with all pre-requisites to build C++ code for linux and run .net tests.
 
-Hypar functions run on Amazon Lambda, which run Linux docker containers. Your C++ must be compiled for Linux in order to be compatible with Lambda. In this example we provide a Docker container using the Amazon Linux 2 image (the same used by Amazon to run Lambda), in which your code can be compiled, and your wrapper can be tested.
+# Why do I need a container?
+Your C++ must be compiled for Linux in order to run on Hypar. Hypar functions run on Amazon Lambda, which runs on Linux. Using a docker container based on the Amazon Linux 2 image, the same used by Amazon to run Lambda, you can use the container to compile, test, and even publish your code.
 
 ## Building the Container
+The following command will build the docker image and tag it with the name `hypar-cpp` so that it's easy to reference later.
 ```
 docker build . -t hypar-cpp
 ```
@@ -20,6 +20,15 @@ The following command will run the docker container interactively and bind the f
 ```
 docker run -it --mount src="$(pwd)",target=/function,type=bind hypar-cpp
 ```
+
+## Building the C++ Code in the Container
+From the container's command line:
+```
+cd cpp/build
+cmake3 ..
+make
+```
+If the build is successful, the `.so` file will be written to the `/build` directory. The .net wrapper's `.csproj` has a copy step which will copy this `.so` to the build directory so that it is packaged with your function.
 
 |Input Name|Type|Description|
 |---|---|---|
