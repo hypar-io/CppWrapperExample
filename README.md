@@ -6,8 +6,10 @@ This is an example of how to build a C++ library, called by a .net wrapper, for 
 - `/test` - Contains the .net test source code.
 - `Dockerfile` - The Docker file describes the setup of your docker container with all pre-requisites to build C++ code for linux and run .net tests.
 
-# Why do I need a container?
+## Why do I need a container?
 Your C++ must be compiled for Linux in order to run on Hypar. Hypar functions run on Amazon Lambda, which runs on Linux. Using a docker container based on the Amazon Linux 2 image, the same used by Amazon to run Lambda, you can use the container to compile, test, and even publish your code.
+
+If you're already developing and building your code on Linux, it's possible that you won't need to use the container. It's possible however that your Linux will vary enough from that used in the container such that certain dependencies are not available eventually when the code is executed on Hypar.
 
 ## Building the Container
 The following command will build the docker image and tag it with the name `hypar-cpp` so that it's easy to reference later.
